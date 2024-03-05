@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura</title>
+    <style>
+        /* Estilos generales */
+        @page {
+            size: letter;
+            margin: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            width: 100%;
+        }
+        /* Estilos para el título de la factura */
+        .invoice-header h1 {
+            margin: 0;
+            color: #333;
+            text-transform: uppercase;
+            
+        }
+        /* Estilos para la información del cliente */
+        .invoice-info {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .invoice-info p {
+            margin: 5px 0;
+        }
+        /* Estilos para los detalles de la factura */
+        .invoice-details {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .invoice-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .invoice-details table th,
+        .invoice-details table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-transform: uppercase;
+        }
+        .invoice-details table th:first-child,
+        .invoice-details table td:first-child {
+            width: auto;
+            text-align: right; /* Alineación del concepto a la derecha */
+        }
+        .invoice-details table th:last-child,
+        .invoice-details table td:last-child {
+            text-align: center; /* Alineación del monto al centro */
+        }
+        /* Estilos para el total de la factura */
+        .invoice-total {
+            text-align: right;
+            text-transform: uppercase;
+        }
+        /* Estilos para la tabla adicional */
+        .extra-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .extra-table th,
+        .extra-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Tabla adicional -->
+    <table class="extra-table">
+        <tr>
+            <th style="text-align: center;"><<IF([tipodoc]="FACTURA NFC",  LOOKUP([iddatoscompany],datoscompany,iddatoscompany,logo3), 
+                LOOKUP([iddatoscompany],datoscompany,iddatoscompany,logo2))>>
+                </td>
+        </tr>
+        <tr>
+            <tr style="background-color: #434343; color: white;">
+            <th style="text-align: center; width: 100%; font-weight: bold; font-size: 32px; /*"><<IFS([tipodoc]=FACTURA, FACTURA,
+                [tipodoc]=FACTURA NFC, FACTURA CF,
+              [tipodoc]=COTIZACION, COTIZACION)>></td>
+        </tr>
+
+    </table>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+                
+        <!-- Detalles adicionales de la factura -->
+        <div class="invoice-details">
+            <table>
+                <tbody>
+
+                    <tr>
+                        
+                        <th style="text-align: left; width: 60%; font-weight: bold; font-size: 22px;">CLIENTE: <<[cliente].[nombre]>></th>
+                        <th style="background-color: #434343; color: white; text-align: right; width: 10%; border: 1px solid #434343;">NO.:</th>
+                        <th style="text-align: right; width: 10%; font-weight: bold; border: 2px solid #434343;"> <<[nfactura]>></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; font-weight: bold; font-size: 19px;">DIRECCION: <<[cliente].[direccion]>></th>
+                        <th style="background-color: #434343; color: white; text-align: right; border: 1px solid #434343;">FECHA:</th>
+                        <th style="text-align: right; font-weight: bold; border: 2px solid #434343;"><<[fecha]>></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; font-weight: bold; font-size: 19px;">TELEFONO: <<TEXT([cliente].[telefono])>></th>
+                        <th style="background-color: #434343; color: white; text-align: right; border: 1px solid #434343;">TIPO TRANS.:</th>
+                        <th style="text-align: right; font-weight: bold; border: 2px solid #434343;"> <<[tipo de transaccion]>></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; font-weight: bold; font-size: 19px;">RNC: <<[cliente].[rnc]>></th>
+                        <th style="background-color: #434343; color: white; text-align: right; border: 1px solid #434343;">NCF:</th>
+                        <th style="text-align: right; font-weight: bold; border: 2px solid #434343;"><<IF([tipodoc]=FACTURA NFC,[NCF],[estado])>></th>
+                    </tr>
+
+                    <tr>
+                        <th style="text-align: left;"></th>
+                        <th style="background-color: #434343; color: white; text-align: right;">VENCIMIENTO:</th>
+                        <th style="text-align: right; font-weight: bold; border: 2px solid #434343;"><<[fechacompro]>></th>
+                    </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Detalles de la factura -->
+        <div class="invoice-details">
+            <table>
+                <thead>
+                    <tr>
+                        
+                        <tr style="background-color: #434343; color: white;">
+                        <th style="text-align: center; width: 5%; border: 1px solid #434343;">UDS</th>
+                        <th style="text-align: center; width: 60%; border: 1px solid #434343;">DESCRIPCION</th>
+                        <th style="text-align: center; width: 8%; border: 1px solid #434343;">PRECIO</th>
+                        <th style="text-align: center; width: 8%; border: 1px solid #434343;">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: black; text-align: center; font-weight: bold; border: 2px solid #434343;"><<Start: [Related ventas]>><<[uds]>></td>
+                        <td style="text-align: left; font-weight: bold; border: 2px solid #434343;"><<item>> <<IF([clase]=FIJO, “ ”,  [MEDIDAS])>>  <<[descripcion]>></td>
+                        <td style="text-align: center; font-weight: bold; border: 2px solid #434343;"><<[precio]>></td>
+                        <td style="text-align: center; font-weight: bold; border: 2px solid #434343;"><<[total]>><<END>></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Detalles adicionales de la factura -->
+        <div class="invoice-details">
+            <table>
+                <tbody>
+                    <tr>
+                        <th style="background-color: #434343; color: white; text-align: right; width: 0.5%; border: 1px solid #434343;">Subtotal</th>
+                        <th style="text-align: left; width: 10%; font-weight: bold;"><<[subtotal]>></th> <!-- Alineación del monto al centro -->
+                    </tr>
+                    <tr>
+                        <th style="background-color: #434343; color: white; text-align: right; width: 0.5%; border: 1px solid #434343;">ITBIS</th>
+                        <th style="text-align: left; width: 10%; font-weight: bold;"><<[itbis]>></th>
+                    </tr>
+                    <tr>
+                        <th style="background-color: #434343; color: white; text-align: right; width: 0.5%; border: 1px solid #434343;">Total</th>
+                        <th style="text-align: left; width: 10%; font-weight: bold;"><<[total]>></th>
+                    </tr>
+                    <tr>
+                        <th style="background-color: #434343; color: white; text-align: right; width: 0.5%; border: 1px solid #434343;"><<IF([tipo de transaccion]=CONTADO, DESCUENTO:, ABONO:)>></th>
+                        <th style="text-align: left; width: 10%; font-weight: bold;"><<IF([tipo de transaccion]=CONTADO,[descuento],[abono])>></th>
+                    </tr>
+                    <tr>
+                        <th style="background-color: #434343; color: white; text-align: right; width: 0.5%; border: 1px solid #434343;"><<IF([tipo de transaccion]= CONTADO, “TOTAL FINAL:”, “RESTA:”)>></th>
+                        <th style="text-align: left; width: 10%; font-weight: bold;"><<IF([tipo de transaccion]= CONTADO, [total final], [resta])>></th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- texto -->
+    <table class="extra-table">
+        <tr>
+            <th style="text-align: center; width: 10%; font-weight: bold; color: red;">Revise, Lea y Verifique el arte cuidadosamente, la firma de usted implica total responsabilidad en los errores que pudieran imprimirse.</th>
+        </tr>
+    </table>
+
+    <!-- Tabla adicional -->
+    <table class="extra-table">
+        <tr>
+            <th>________________________</th>
+            <th>________________________</th>
+        </tr>
+        <tr>
+            <td style="text-align: center; font-weight: bold;">ARPA GRAPHICS</td>
+            <td style="text-align: center; font-weight: bold;"><<[cliente].[nombre]>></td>
+        </tr>
+
+    </table>
+</body>
+</html>
